@@ -9,33 +9,32 @@ const CONNECTIONS_URL = 'http://15.204.218.219:30120/op-framework/connections.js
 app.get('/connections', async (req, res) => {
   try {
     const response = await fetch(CONNECTIONS_URL);
-    const data = await response.json();
+    const text = await response.text(); // Get raw response
+
+    console.log('RAW RESPONSE FROM FiveM:\n', text); // Log it to Render logs
+
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (jsonErr) {
+      console.error('JSON parsing failed:', jsonErr);
+      return res.status(500).json({ error: 'Invalid JSON from FiveM', detail: jsonErr.message, raw: text });
+    }
 
     const licenses = data.map(player => {
       if (!player.identifiers || !Array.isArray(player.identifiers)) return null;
 
       const licenseId = player.identifiers.find(id => id.startsWith('license:'));
       return licenseId ? licenseId.replace('license:', '') : null;
-    }).filter(Boolean); // Remove nulls
+    }).filter(Boolean);
 
     res.json({ licenses });
   } catch (err) {
-    console.error('Fetch or parse error:', err);
+    console.error('Fetch error:', err);
     res.status(500).json({ error: 'Failed to fetch licenses', detail: err.message });
   }
 });
 
-
-// Optional: keep old route if you still use it elsewhere
-app.get('/players.json', async (req, res) => {
-  try {
-    const response = await fetch('http://15.204.218.219:30120/players.json');
-    const data = await response.json();
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch players', detail: err.message });
-  }
-});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Proxy running on port ${PORT}`));
