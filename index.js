@@ -1,12 +1,14 @@
-const express = require('express');
-const fetch = require('node-fetch');
-const app = express();
+import express from 'express';
+import fetch from 'node-fetch';
 
-const FIVEM_SERVER_BASE = 'http://15.204.218.219:30120/op-framework';
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+const BASE_URL = 'http://15.204.218.219:30120/op-framework';
 
 app.get('/connections.json', async (req, res) => {
     try {
-        const response = await fetch(`${FIVEM_SERVER_BASE}/connections.json`);
+        const response = await fetch(`${BASE_URL}/connections.json`);
         const data = await response.json();
         res.json(data);
     } catch (err) {
@@ -15,17 +17,17 @@ app.get('/connections.json', async (req, res) => {
     }
 });
 
-// ✅ Add this route for serverMetrics.json
-app.get('/serverMetrics.json', async (req, res) => {
+app.get('/servermetrics.json', async (req, res) => {
     try {
-        const response = await fetch(`${FIVEM_SERVER_BASE}/serverMetrics.json`);
+        const response = await fetch(`${BASE_URL}/servermetrics.json`);
         const data = await response.json();
         res.json(data);
     } catch (err) {
-        console.error('Error fetching serverMetrics.json:', err);
-        res.status(500).json({ error: 'Failed to fetch serverMetrics.json' });
+        console.error('Error fetching servermetrics.json:', err);
+        res.status(500).json({ error: 'Failed to fetch servermetrics.json' });
     }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Proxy server running on port ${PORT}`));
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
