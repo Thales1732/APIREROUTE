@@ -1,13 +1,13 @@
 {
   "name": "apireroute",
   "version": "1.0.0",
+  "description": "Proxy API for FiveM data",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
   "dependencies": {
-    "axios": "^1.6.8",
-    "express": "^4.18.2"
-    "node-fetch": "^3.3.1"
+    "express": "^4.18.2",
+    "node-fetch": "^2.6.7"
   }
 }
