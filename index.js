@@ -12,16 +12,19 @@ app.get('/connections', async (req, res) => {
     const data = await response.json();
 
     const licenses = data.map(player => {
+      if (!player.identifiers || !Array.isArray(player.identifiers)) return null;
+
       const licenseId = player.identifiers.find(id => id.startsWith('license:'));
       return licenseId ? licenseId.replace('license:', '') : null;
     }).filter(Boolean); // Remove nulls
 
     res.json({ licenses });
   } catch (err) {
-    console.error(err);
+    console.error('Fetch or parse error:', err);
     res.status(500).json({ error: 'Failed to fetch licenses', detail: err.message });
   }
 });
+
 
 // Optional: keep old route if you still use it elsewhere
 app.get('/players.json', async (req, res) => {
