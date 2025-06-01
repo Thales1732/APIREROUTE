@@ -17,13 +17,13 @@ app.get('/connections.json', async (req, res) => {
     }
 });
 
-app.get('/servermetrics.json', async (req, res) => {
+app.get('/serverMetrics.json', async (req, res) => {
     try {
-        const response = await fetch(`${BASE_URL}/servermetrics.json`);
+        const response = await fetch(`${BASE_URL}/serverMetrics.json`);
         const data = await response.json();
         res.json(data);
     } catch (err) {
-        console.error('Error fetching servermetrics.json:', err);
+        console.error('Error fetching serverMetrics.json:', err);
         res.status(500).json({ error: 'Failed to fetch servermetrics.json' });
     }
 });
