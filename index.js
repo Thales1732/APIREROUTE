@@ -10,8 +10,7 @@ app.get('/connections', async (req, res) => {
   try {
     const response = await fetch(CONNECTIONS_URL);
     const text = await response.text(); // Get raw response
-
-    console.log('RAW RESPONSE FROM FiveM:\n', text); // Log it to Render logs
+    console.log('RAW TEXT RESPONSE:\n', text); // Print raw response to logs
 
     let data;
     try {
@@ -21,7 +20,14 @@ app.get('/connections', async (req, res) => {
       return res.status(500).json({ error: 'Invalid JSON from FiveM', detail: jsonErr.message, raw: text });
     }
 
-    const licenses = data.map(player => {
+    // Print parsed JSON structure
+    console.log('PARSED JSON TYPE:', typeof data, Array.isArray(data) ? 'Array' : 'Object');
+    console.log('Parsed keys (if object):', Object.keys(data));
+
+    // Instead of assuming it's an array, handle as object if needed
+    const players = Array.isArray(data) ? data : Object.values(data);
+
+    const licenses = players.map(player => {
       if (!player.identifiers || !Array.isArray(player.identifiers)) return null;
 
       const licenseId = player.identifiers.find(id => id.startsWith('license:'));
@@ -34,6 +40,7 @@ app.get('/connections', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch licenses', detail: err.message });
   }
 });
+
 
 
 const PORT = process.env.PORT || 3000;
